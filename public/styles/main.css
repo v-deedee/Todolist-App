@@ -1,0 +1,137 @@
+/* 
+html {}
+body {}
+*/
+
+.outer-box {
+    padding: 20px 10px;
+}
+
+
+.menu-side {
+    height: calc(100vh - 40px);
+    padding: 20px;
+    background-color: aliceblue;
+    border-radius: 20px;
+    display: none;
+}
+
+a.today, a.work {
+    text-decoration: none;
+    color: black;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    font-size:smaller;
+}
+
+a.work:hover {
+    background-color: #e2e3e5;
+}
+
+a.today:hover {
+    background-color: #e2e3e5;
+}
+
+
+.list-side {
+    height: calc(100vh - 40px);
+    padding: 10px 20px;
+}
+
+.option-title {
+    text-align: center;
+}
+
+.task-list {
+    height: 75vh;
+    overflow-y: auto;
+}
+
+.task-box {
+    margin: 20px 0;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.task-box .description {
+    display: none;
+    transition: all 2s;
+}
+
+.task-box .appear {
+    display: block;
+}
+
+.task-box .task-name {
+    font-weight: 600;
+}
+
+.arrow {
+    height: 16px;
+}
+
+.rotate {
+    transform: rotate(180deg) translateY(-100%);
+    height: 16px;
+}
+
+
+.detail-side {
+    height: calc(100vh - 40px);
+    padding: 20px;
+    margin: 0;
+    border-radius: 20px;
+    display: none;
+}
+
+
+
+.icon {
+    margin-top: -3px;
+}
+
+input:focus {
+    box-shadow: none !important;
+}
+
+
+/* @media (max-width: 768px) {
+    .detail-side {
+        display: none;
+    }
+} */
+
+@media (max-width: 992px) {
+    html {
+        font-size: 14px;
+    }
+}
+
+@media (min-width: 768px) {
+    .detail-side {
+        display: block;
+    }
+}
+
+@media (min-width: 576px) {
+    .menu-side {
+        display: block;
+    }
+
+    .option-title {
+        text-align: start;
+    }
+}
+
+@media (max-width: 360px) {
+    .add-task-box {
+        margin: 0 !important;
+    }
+
+    .task-box {
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+    }
+}
