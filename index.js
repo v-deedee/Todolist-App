@@ -1,22 +1,24 @@
 import express from "express";
 import bodyParser from "body-parser";
 
+const app = express();
+const port = 3000;
+
 let today_id = 3;
 let work_id = 0;
 
 let today_tasks_list = [ 
-    {id: 0, name: "Task 1", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam tristique cursus purus in mattis. Ut molestie varius mauris in eleifend."}, 
-    {id: 1, name: "Task 2", description: "2 ipsum dolor sit amet, consectetur adipiscing elit."},
-    {id: 2, name: "Task 3", description: "3 ipsum dolor sit amet, consectetur adipiscing elit."}
+    {id: 0, name: "Sample task 1", description: "Sample description 1"}, 
+    {id: 1, name: "Sample task 2", description: "Sample description 1"},
+    {id: 2, name: "Sample task 3", description: "Sample description 1"}
 ];
 
 let work_tasks_list = [];
 
-const app = express();
-const port = 3000;
-
 function modifyTask(list, id, new_name, new_descr) {
-    if (id == "") return "notfound";
+    if (id == "") {
+        return "notfound";
+    }
     if (new_name == "") {
         return "fail";
     }
@@ -30,62 +32,74 @@ function modifyTask(list, id, new_name, new_descr) {
     return "success";
 }
 
-function deleteTask(list, id) {
-    // if (id == "") return "notfound";
-    // list =  list.slice(0, 1);
-    // return "success";
-}
-
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({extended : true}));
 
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+
+/*
+Render today page
+*/
 app.get("/", (req, res) => {
-    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
+    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: "" });
 });
 
 app.post("/task-added", (req, res) => {
-    today_tasks_list.push({id: today_id, name: req.body["task-name"], description: ""});
-    today_id++;
-    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
+    let add = "success";
+    if (req.body["task-name"] == "") {
+        add = "fail";
+    } else {
+        today_tasks_list.push({id: today_id, name: req.body["task-name"], description: ""});
+        today_id++;
+    }
+    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: add });
 });
 
 app.post("/modify", (req, res) => {
-    let result = modifyTask(today_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
-    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: result });
+    let modify = modifyTask(today_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
+    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: modify, add: "" });
 });
 
 app.post("/deleted", (req, res) => {
-    // deleteTask(today_tasks_list, req.body["current-id"]);
-    today_tasks_list = today_tasks_list.filter(e => {
-        return e.id != req.body["current-id"];
-    })
-    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
+    if (req.body["current-id"] != "") {
+        today_tasks_list = today_tasks_list.filter(e => {
+            return e.id != req.body["current-id"];
+        });
+    }
+    res.render("index.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: "" });
 });
 
 
-
+/*
+Render work page
+*/
 app.get("/work", (req, res) => {
-    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
+    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: "" });
 })
 
 app.post("/work/task-added", (req, res) => {
-    work_tasks_list.push({id: work_id, name: req.body["task-name"], description: ""});
-    work_id++;
-    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
+    let add = "success";
+    if (req.body["task-name"] == "") {
+        add = "fail";
+    } else {
+        work_tasks_list.push({id: work_id, name: req.body["task-name"], description: ""});
+        work_id++;
+    }
+    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: add });
 });
 
 app.post("/work/modify", (req, res) => {
-    let result = modifyTask(work_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
-    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: result });
+    let modify = modifyTask(work_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
+    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: modify, add: "" });
 });
 
 app.post("/work/deleted", (req, res) => {
-    work_tasks_list = work_tasks_list.filter(e => {
-        return e.id != req.body["current-id"];
-    })
-    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, result: "" });
-});
-
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
+    if (req.body["current-id"] != "") {
+        work_tasks_list = work_tasks_list.filter(e => {
+            return e.id != req.body["current-id"];
+        });
+    }
+    res.render("work.ejs", { today_tasks_list: today_tasks_list, work_tasks_list: work_tasks_list, modify: "", add: "" });
 });

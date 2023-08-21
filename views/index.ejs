@@ -47,6 +47,27 @@
                         </a>
                     </div>
                 </div>
+                <!-- Appear only at small-size window -->
+                <div class="menu-side-bar">
+                    <a href="/" class="today bg-secondary-subtle p-2">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar-check icon" viewBox="0 0 16 16">
+                                <path d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"/>
+                                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5zM1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4H1z"/>
+                            </svg>
+                            <strong>Today</strong>
+                        </div>
+                    </a>
+                    <a href="/work" class="work p-2">
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-card-list icon" viewBox="0 0 16 16">
+                                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h13zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z"/>
+                                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zM4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0zm0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z"/>
+                            </svg>
+                            Work
+                        </div>
+                    </a>
+                </div>
                 <!-- List column, contain list of tasks -->
                 <div class="list-side col-md-5 col-sm-8 col-12">
                     <h1 class="option-title mb-4">Today</h1>
@@ -73,11 +94,26 @@
                                     <div class="description">
                                         <p><%= today_tasks_list[i].description %></p>
                                     </div>
+                                    <form action="/modify" method="POST" class="responsive-modify-box">
+                                        <input type="text" value="" name="current-id" id="current-id" style="display: none;">
+                                        <div class="mb-3">
+                                            <label for="new-name" class="form-label">Rename</label>
+                                            <input type="text" class="form-control" value="" name="new-name" id="new-name" placeholder="Enter new task name">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="descr-content" class="form-label">Description</label>
+                                            <textarea class="form-control" name="description" id="descr-content" rows="3"></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-warning">Save Changes</button>
+                                        <button type="submit" formaction="/deleted" class="btn btn-light">Delete Task</button>
+                                    </form>
                                 </div>
-                                <div class="arrow px-2">
-                                    <svg fill="#000000" height="16" width="16" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
-                                        <path id="XMLID_225_" d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"/>
-                                    </svg>
+                                <div>
+                                    <button type="button" class="btn btn-light arrow" id="button<%= today_tasks_list[i].id %>">
+                                        <svg fill="#000000" height="16" width="16" class="inner-arrow" version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330" xml:space="preserve">
+                                            <path id="XMLID_225_" d="M325.607,79.393c-5.857-5.857-15.355-5.858-21.213,0.001l-139.39,139.393L25.607,79.393 c-5.857-5.857-15.355-5.858-21.213,0.001c-5.858,5.858-5.858,15.355,0,21.213l150.004,150c2.813,2.813,6.628,4.393,10.606,4.393 s7.794-1.581,10.606-4.394l149.996-150C331.465,94.749,331.465,85.251,325.607,79.393z"/>
+                                        </svg>
+                                    </button>
                                 </div>
                             </div>
                         <% } %>
@@ -86,7 +122,7 @@
                 <!-- Task detail column, contain content box to modify tasks -->
                 <div class="detail-side col-md-4 bg-secondary-subtle">
                     <h3>Task:</h3>
-                    <% if (result == "fail") { %>
+                    <% if (modify == "fail") { %>
                         <div class="alert alert-danger d-flex align-items-center alert-dismissible fade show" role="alert">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-exclamation-triangle-fill me-2" viewBox="0 0 16 16">
                                 <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
@@ -94,7 +130,7 @@
                             Task name could not be empty!
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
-                    <% } else if (result == "success") { %>
+                    <% } else if (modify == "success") { %>
                         <div class="alert alert-success d-flex align-items-center alert-dismissible fade show" role="alert">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-circle-fill me-2" viewBox="0 0 16 16">
                                 <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
@@ -103,7 +139,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>
                     <% } %>
-                    <form action="/modify" method="POST">
+                    <form action="/modify" method="POST" class="modify-box">
                         <input type="text" value="" name="current-id" id="current-id" style="display: none;">
                         <div class="mb-3">
                             <label for="new-name" class="form-label">Rename</label>
@@ -122,22 +158,6 @@
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
-    <script>
-        // document.querySelectorAll(".task-box").forEach(e => {
-        //     e.addEventListener("click", () => {
-        //         e.querySelector(".description").classList.toggle("appear");
-        //         e.querySelector(".arrow").classList.toggle("rotate");
-        //     })
-        // })
-        $(".task-box").each(function() {
-            $(this).on("click", function() {
-                $(this).find(".description").toggleClass("appear");
-                $(this).find(".arrow").toggleClass("rotate");
-                $(".detail-side #current-id").attr("value", $(this).find("input").attr("id"));
-                $(".detail-side #new-name").attr("value", $(this).find(".task-name p").html());
-                $(".detail-side textarea").text($(this).find(".description p").html());
-            });
-        });
-    </script>
+    <script src="/js/script.js"></script>
 </body>
 </html>
