@@ -1,5 +1,16 @@
 # Todolist-App
+
+**#EJS
+#CSS
+#JS
+#Bootstrap
+#NodeJS**
+
 A simple To do list App works with local host.
+
+
+## Date
+7/8/2023 - 23/8/2023
 
 ## Running the program
 
