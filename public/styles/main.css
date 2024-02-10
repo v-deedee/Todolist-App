@@ -1,5 +1,6 @@
 :root {
-    --secondary-bg-subtle: #e2e3e5; /* from bootstrap */
+    --secondary-bg-subtle: #e2e3e5;
+    /* from bootstrap */
     --menu-bg-color: #f0f8ff;
     --text-color: #000000;
     --task-completed-color: #a4a5a7;
@@ -22,21 +23,21 @@ Style menu column
     display: none;
 }
 
-.menu-side a.today,
-.menu-side a.work {
+.menu-side a.workday,
+.menu-side a.dayoff {
     text-decoration: none;
     color: var(--text-color);
     display: flex;
     justify-content: space-between;
     border-radius: 10px;
-    font-size:smaller;
+    font-size: smaller;
 }
 
-a.work:hover {
+a.dayoff:hover {
     background-color: var(--secondary-bg-subtle);
 }
 
-a.today:hover {
+a.workday:hover {
     background-color: var(--secondary-bg-subtle);
 }
 
@@ -49,14 +50,14 @@ Style menu bar (responsive only)
     gap: 10px
 }
 
-.menu-side-bar a.today,
-.menu-side-bar a.work {
+.menu-side-bar a.workday,
+.menu-side-bar a.dayoff {
     text-decoration: none;
     color: var(--text-color);
     display: inline-flex;
     justify-content: left;
     border-radius: 10px;
-    font-size:smaller;
+    font-size: smaller;
 }
 
 /*
@@ -163,9 +164,11 @@ Responsive setting
     .detail-side {
         display: block;
     }
+
     .task-box .appear {
         display: block;
     }
+
     .task-box .modify-box-appear {
         display: none;
     }
@@ -175,12 +178,15 @@ Responsive setting
     .menu-side {
         display: block;
     }
+
     .menu-side-bar {
         display: none;
     }
+
     .list-side {
         height: calc(100vh - 40px);
     }
+
     .option-title {
         text-align: start;
     }
@@ -190,6 +196,7 @@ Responsive setting
     .add-task-box {
         margin: 0 !important;
     }
+
     .task-box {
         margin-left: 0 !important;
         margin-right: 0 !important;
