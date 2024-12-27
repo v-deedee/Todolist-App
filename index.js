@@ -1,47 +1,101 @@
 import express from "express";
 import bodyParser from "body-parser";
+import pg from "pg";
+
+import 'dotenv/config';
 
 const app = express();
 const port = 3000;
 
+const db = new pg.Client({
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    database: process.env.DB_NAME,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+});
+
+db.connect();
+
+async function getWorkdayTasks() {
+    const tasks = await db.query("SELECT * FROM workday ORDER BY id;");
+    return tasks.rows;
+};
+
+async function getDayoffTasks() {
+    const tasks = await db.query("SELECT * FROM dayoff ORDER BY id");
+    return tasks.rows;
+}
+
 let add = "";
 let modify = "";
-let workday_id = 3;
-let dayoff_id = 0;
 
-// let workday_tasks_list = [
-//     { id: 0, name: "Sample task 1", description: "Sample description 1" },
-//     { id: 1, name: "Sample task 2", description: "Sample description 1" },
-//     { id: 2, name: "Sample task 3", description: "Sample description 1" }
+// let workday_tasks = [
+//     { id: 0, name: "Sample task 1", description: "Sample description 1" }
 // ];
-let workday_tasks_list = [];
 
+let workday_tasks = await getWorkdayTasks();
+let dayoff_tasks = await getDayoffTasks();
 
-let dayoff_tasks_list = [];
-
-function addTask(list, new_name, counter) {
+async function addWorkdayTask(new_name) {
     if (new_name == "") {
         return "fail";
     } else {
-        list.push({ id: counter, name: new_name, description: "" });
+        db.query(`
+            INSERT INTO workday(name, description)
+            VALUES($1, $2)
+        `, [new_name, ""]);
+        workday_tasks = await getWorkdayTasks();
     }
     return "success";
 }
 
-function modifyTask(list, id, new_name, new_descr) {
+async function addDayoffTask(new_name) {
+    if (new_name == "") {
+        return "fail";
+    } else {
+        db.query(`
+            INSERT INTO dayoff(name, description)
+            VALUES($1, $2)
+        `, [new_name, ""]);
+        dayoff_tasks = await getDayoffTasks();
+    }
+    return "success";
+}
+
+async function modifyWordayTask(id, new_name, new_descr) {
     if (id == "") {
         return "notfound";
     }
     if (new_name == "") {
         return "fail";
     }
-    for (let i = 0; i < list.length; i++) {
-        if (list[i]["id"] == id) {
-            list[i]["name"] = new_name;
-            list[i]["description"] = new_descr;
-            break;
-        };
-    };
+
+    db.query(`
+        UPDATE workday
+        SET name = $1, description = $2
+        WHERE id = $3
+    `, [new_name, new_descr, id]);
+    workday_tasks = await getWorkdayTasks();
+
+    return "success";
+}
+
+async function modifyDayoffTask(id, new_name, new_descr) {
+    if (id == "") {
+        return "notfound";
+    }
+    if (new_name == "") {
+        return "fail";
+    }
+
+    db.query(`
+        UPDATE dayoff
+        SET name = $1, description = $2
+        WHERE id = $3
+    `, [new_name, new_descr, id]);
+    dayoff_tasks = await getDayoffTasks();
+
     return "success";
 }
 
@@ -57,8 +111,8 @@ Render workday page
 */
 app.get("/", (req, res) => {
     res.render("workday.ejs", {
-        workday_tasks_list: workday_tasks_list,
-        dayoff_tasks_list: dayoff_tasks_list,
+        workday_tasks: workday_tasks,
+        dayoff_tasks: dayoff_tasks,
         modify: modify,
         add: add
     });
@@ -66,25 +120,27 @@ app.get("/", (req, res) => {
     add = "";
 });
 
-app.post("/task-added", (req, res) => {
+app.post("/task-added", async (req, res) => {
     modify = "";
-    add = addTask(workday_tasks_list, req.body["task-name"], workday_id);
-    workday_id++;
+    add = await addWorkdayTask(req.body["task-name"]);
     res.redirect("/");
 });
 
-app.post("/modify", (req, res) => {
+app.post("/modify", async (req, res) => {
     add = "";
-    modify = modifyTask(workday_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
+    modify = await modifyWordayTask(req.body["current-id"], req.body["new-name"], req.body["description"]);
     res.redirect("/");
 });
 
-app.post("/deleted", (req, res) => {
+app.post("/deleted", async (req, res) => {
     if (req.body["current-id"] != "") {
-        workday_tasks_list = workday_tasks_list.filter(e => {
-            return e.id != req.body["current-id"];
-        });
+        db.query(`
+            DELETE FROM workday
+            WHERE id = $1
+        `, [req.body["current-id"]]);
+        workday_tasks = await getWorkdayTasks();
     }
+
     res.redirect("/");
 });
 
@@ -93,29 +149,30 @@ app.post("/deleted", (req, res) => {
 Render dayoff page
 */
 app.get("/dayoff", (req, res) => {
-    res.render("dayoff.ejs", { workday_tasks_list: workday_tasks_list, dayoff_tasks_list: dayoff_tasks_list, modify: modify, add: add });
+    res.render("dayoff.ejs", { workday_tasks: workday_tasks, dayoff_tasks: dayoff_tasks, modify: modify, add: add });
     modify = "";
     add = "";
 })
 
-app.post("/dayoff/task-added", (req, res) => {
+app.post("/dayoff/task-added", async (req, res) => {
     modify = "";
-    add = addTask(dayoff_tasks_list, req.body["task-name"], dayoff_id);
-    dayoff_id++;
+    add = await addDayoffTask(req.body["task-name"]);
     res.redirect("/dayoff");
 });
 
-app.post("/dayoff/modify", (req, res) => {
+app.post("/dayoff/modify", async (req, res) => {
     add = "";
-    modify = modifyTask(dayoff_tasks_list, req.body["current-id"], req.body["new-name"], req.body["description"]);
+    modify = await modifyDayoffTask(req.body["current-id"], req.body["new-name"], req.body["description"]);
     res.redirect("/dayoff");
 });
 
-app.post("/dayoff/deleted", (req, res) => {
+app.post("/dayoff/deleted", async (req, res) => {
     if (req.body["current-id"] != "") {
-        dayoff_tasks_list = dayoff_tasks_list.filter(e => {
-            return e.id != req.body["current-id"];
-        });
+        db.query(`
+            DELETE FROM dayoff
+            WHERE id = $1
+        `, [req.body["current-id"]]);
+        dayoff_tasks = await getDayoffTasks();
     }
     res.redirect("/dayoff");
 });

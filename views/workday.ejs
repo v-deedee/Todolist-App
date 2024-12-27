@@ -36,7 +36,7 @@
                                 <strong>Workday</strong>
                             </div>
                             <div class="noti-box bg-light rounded-2 px-lg-3 px-md-2 px-1">
-                                <%= workday_tasks_list.length %>
+                                <%= workday_tasks.length %>
                             </div>
                         </a>
                         <a href="/dayoff" class="dayoff p-2">
@@ -51,7 +51,7 @@
                                 Day off
                             </div>
                             <div class="noti-box bg-light rounded-2 px-lg-3 px-md-2 px-1">
-                                <%= dayoff_tasks_list.length %>
+                                <%= dayoff_tasks.length %>
                             </div>
                         </a>
                     </div>
@@ -101,19 +101,18 @@
                     </form>
                     <!-- List of tasks -->
                     <div class="task-list">
-                        <% for (let i=0; i < workday_tasks_list.length; i++) { %>
+                        <% for (let i=0; i < workday_tasks.length; i++) { %>
                             <div class="task-box form-check border-bottom mx-4">
                                 <div>
-                                    <input class="form-check-input" type="checkbox"
-                                        id="<%= workday_tasks_list[i].id %>">
-                                    <label class="task-name form-check-label" for="<%= workday_tasks_list[i].id %>">
+                                    <input class="form-check-input" type="checkbox" id="<%= workday_tasks[i].id %>">
+                                    <label class="task-name form-check-label" for="<%= workday_tasks[i].id %>">
                                         <p>
-                                            <%= workday_tasks_list[i].name %>
+                                            <%= workday_tasks[i].name %>
                                         </p>
                                     </label>
                                     <div class="description">
                                         <p>
-                                            <%= workday_tasks_list[i].description %>
+                                            <%= workday_tasks[i].description %>
                                         </p>
                                     </div>
                                     <form action="/modify" method="POST" class="responsive-modify-box">
@@ -125,9 +124,11 @@
                                                 id="new-name" placeholder="Enter new task name">
                                         </div>
                                         <div class="mb-3">
-                                            <label for="descr-content" class="form-label">Description</label>
+                                            <label for="descr-content" class="form-label">Description (1000
+                                                characters limit)</label>
                                             <textarea class="form-control" name="description" id="descr-content"
-                                                rows="3"></textarea>
+                                                rows="3" maxlength="1000"
+                                                placeholder="Enter task description"></textarea>
                                         </div>
                                         <button type="submit" class="btn btn-warning">Save Changes</button>
                                         <button type="submit" formaction="/deleted" class="btn btn-light">Delete
@@ -136,7 +137,7 @@
                                 </div>
                                 <div>
                                     <button type="button" class="btn btn-light arrow"
-                                        id="button<%= workday_tasks_list[i].id %>">
+                                        id="button<%= workday_tasks[i].id %>">
                                         <svg fill="#000000" height="16" width="16" class="inner-arrow" version="1.1"
                                             id="Layer_1" xmlns="http://www.w3.org/2000/svg"
                                             xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 330 330"
@@ -186,9 +187,10 @@
                                             placeholder="Enter new task name">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="descr-content" class="form-label">Description</label>
-                                        <textarea class="form-control" name="description" id="descr-content"
-                                            rows="3"></textarea>
+                                        <label for="descr-content" class="form-label">Description (1000
+                                            characters limit)</label>
+                                        <textarea class="form-control" name="description" id="descr-content" rows="3"
+                                            maxlength="1000" placeholder="Enter task description"></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-warning">Save Changes</button>
                                     <button type="submit" formaction="/deleted" class="btn btn-light">
